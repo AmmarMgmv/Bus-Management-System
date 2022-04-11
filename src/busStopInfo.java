@@ -62,14 +62,14 @@ import java.util.Scanner;
  *  For additional documentation, see <a href="https://algs4.cs.princeton.edu/52trie">Section 5.2</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
-public class busStopInfo<Value> {
+public class busStopInfo {
     private int n;              // size
-    private Node<Value> root;   // root of TST
+    private Node root;   // root of TST
 
-    private static class Node<Value> {
+    private static class Node<String> {
         private char c;                        // character
-        private Node<Value> left, mid, right;  // left, middle, and right subtries
-        private Value val;                     // value associated with string
+        private Node left, mid, right;  // left, middle, and right subtries
+        private String val;                     // value associated with string
     }
 
     /**
@@ -107,18 +107,18 @@ public class busStopInfo<Value> {
      *     and {@code null} if the key is not in the symbol table
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public Value get(String key) {
+    public String get(String key) {
         if (key == null) {
             throw new IllegalArgumentException("calls get() with null argument");
         }
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
-        Node<Value> x = get(root, key, 0);
+        Node<String> x = get(root, key, 0);
         if (x == null) return null;
         return x.val;
     }
 
     // return subtrie corresponding to given key
-    private Node<Value> get(Node<Value> x, String key, int d) {
+    private Node<String> get(Node<String> x, String key, int d) {
         if (x == null) return null;
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
         char c = key.charAt(d);
@@ -136,7 +136,7 @@ public class busStopInfo<Value> {
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public void put(String key, Value val) {
+    public void put(String key, String val) {
         if (key == null) {
             throw new IllegalArgumentException("calls put() with null key");
         }
@@ -145,10 +145,10 @@ public class busStopInfo<Value> {
         root = put(root, key, val, 0);
     }
 
-    private Node<Value> put(Node<Value> x, String key, Value val, int d) {
+    private Node<String> put(Node<String> x, String key, String val, int d) {
         char c = key.charAt(d);
         if (x == null) {
-            x = new Node<Value>();
+            x = new Node<String>();
             x.c = c;
         }
         if      (c < x.c)               x.left  = put(x.left,  key, val, d);
@@ -172,7 +172,7 @@ public class busStopInfo<Value> {
         }
         if (query.length() == 0) return null;
         int length = 0;
-        Node<Value> x = root;
+        Node<String> x = root;
         int i = 0;
         while (x != null && i < query.length()) {
             char c = query.charAt(i);
@@ -211,7 +211,7 @@ public class busStopInfo<Value> {
             throw new IllegalArgumentException("calls keysWithPrefix() with null argument");
         }
         Queue<String> queue = new Queue<String>();
-        Node<Value> x = get(root, prefix, 0);
+        Node<String> x = get(root, prefix, 0);
         if (x == null) return queue;
         if (x.val != null) queue.enqueue(prefix);
         collect(x.mid, new StringBuilder(prefix), queue);
@@ -219,7 +219,7 @@ public class busStopInfo<Value> {
     }
 
     // all keys in subtrie rooted at x with given prefix
-    private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
+    private void collect(Node<String> x, StringBuilder prefix, Queue<String> queue) {
         if (x == null) return;
         collect(x.left,  prefix, queue);
         if (x.val != null) queue.enqueue(prefix.toString() + x.c);
@@ -242,7 +242,7 @@ public class busStopInfo<Value> {
         return queue;
     }
  
-    private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
+    private void collect(Node<String> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
         if (x == null) return;
         char c = pattern.charAt(i);
         if (c == '.' || c < x.c) collect(x.left, prefix, i, pattern, queue);
@@ -257,13 +257,35 @@ public class busStopInfo<Value> {
     }
 
 
-    /**
-     * Unit tests the {@code TST} data type.
-     *
-     * @param args the command-line arguments
-     */
-    public static void main(String[] args)
+    public busStopInfo(String filename) 
     {
+    	String stop_desc;
+		String stop_name;
+		int stop_id;
 
+		try 
+		{	
+			File file = new File(filename);
+			Scanner input = new Scanner(file);
+			input.useDelimiter(",");
+			input.nextLine();
+			while(input.hasNextInt())
+			{
+				stop_id = Integer.parseInt(input.next());
+				input.next();
+				stop_name = input.next();
+				stop_desc = input.next();
+				input.nextLine();
+
+				System.out.println("Stop Id: " + stop_id + "\nStop Name: " + stop_name + "\nStop Description: " + stop_desc);
+			}
+			input.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
+
 }
