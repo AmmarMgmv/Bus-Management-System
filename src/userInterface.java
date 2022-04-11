@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class userInterface 
 {
 	public static void main(String[] args) 
@@ -8,5 +10,14 @@ public class userInterface
         System.out.println("Press 3 to search for all trips with a given arrival time");
         System.out.println("Press 0 to exit the program");
         
-    }
+        Scanner input = new Scanner(System.in);
+        
+        int option = -1;
+        option = input.nextInt();
+
+        if (option == 2) 
+        {
+        	busStopInfo tst = new busStopInfo("./inputs/stops.txt");
+        }
+	}
 }
