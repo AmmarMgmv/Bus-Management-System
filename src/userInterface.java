@@ -17,6 +17,11 @@ public class userInterface
         
         int option = -1;
         option = input.nextInt();
+        
+        if (option == 1) 
+        {
+        	System.out.println("Unfortunately, this function has not been implemented yet.");
+        }
 
         if (option == 2) 
         {
