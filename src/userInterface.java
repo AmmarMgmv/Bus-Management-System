@@ -17,7 +17,28 @@ public class userInterface
 
         if (option == 2) 
         {
-        	busStopInfo tst = new busStopInfo("./inputs/stops.txt");
+        	System.out.println("Which stop are you searching for?");
+        	String stopName = input.next().toUpperCase();
+        	findBusStopInfo(stopName);
         }
+	}
+	
+	
+	
+	//Use this to find the information on the bus stop
+	private static void findBusStopInfo(String stopName)
+	{
+		busStopInfo tst = new busStopInfo("./inputs/stops.txt");
+    	Iterable<String> allStops = tst.keysWithPrefix(stopName);
+    	int count = 0;
+    	for (String key : allStops) 
+    	{
+    		System.out.println("" + tst.get(key));
+    		count++;
+    	}
+    	if (count == 0) 
+    	{
+    		System.out.println("No matching stops were found");
+    	}
 	}
 }

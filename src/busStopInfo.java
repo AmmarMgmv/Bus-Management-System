@@ -259,32 +259,63 @@ public class busStopInfo {
 
     public busStopInfo(String filename) 
     {
-    	String stop_desc;
+    	//String stop_desc;
 		String stop_name;
 		int stop_id;
-
+		int stop_code;
+		String line;
+		
 		try 
 		{	
 			File file = new File(filename);
 			Scanner input = new Scanner(file);
-			input.useDelimiter(",");
-			input.nextLine();
-			while(input.hasNextInt())
-			{
-				stop_id = Integer.parseInt(input.next());
-				input.next();
-				stop_name = input.next();
-				stop_desc = input.next();
-				input.nextLine();
+			Scanner currentLine = null;
+			
+            input.nextLine();
+            
+			while(input.hasNext()) {
+                line = input.nextLine();
+                currentLine = new Scanner(line);
+                currentLine.useDelimiter(",");
+                
+                StringBuilder temp = new StringBuilder();
+                stop_id = currentLine.nextInt();
+                stop_code = currentLine.nextInt();
+                stop_name = currentLine.next();
 
-				System.out.println("Stop Id: " + stop_id + "\nStop Name: " + stop_name + "\nStop Description: " + stop_desc);
-			}
+                if (stop_name.substring(0,2).equals("WB") || stop_name.substring(0,2).equals("NB") || stop_name.substring(0,2).equals("SB") || stop_name.substring(0,2).equals("EB")){
+                    String keyword = stop_name.substring(0,2);
+                	temp.append(stop_name.substring(3));
+                    temp.append(" " + keyword);
+                    stop_name = temp.toString();
+                }
+                else if (stop_name.substring(0, 8).equals("FLAGSTOP")) {
+                    temp.append(stop_name.substring(10));
+                    temp.append(" FLAGSTOP");
+                    stop_name = temp.toString();
+                }
+                
+                
+                StringBuilder fullStopInfo = new StringBuilder();
+                fullStopInfo.append("\nStop ID: " + stop_id);
+                fullStopInfo.append("\nStop Code: " + stop_code);
+                fullStopInfo.append("\nStop Name: " + stop_name);
+                fullStopInfo.append("\nStop Description: " + currentLine.next());
+                fullStopInfo.append("\nStop Latitude: " + currentLine.next());
+                fullStopInfo.append("\nStop Longitude: " + currentLine.next());
+                fullStopInfo.append("\nZone ID: " + currentLine.next());
+                fullStopInfo.append("\nLocation Type: " + currentLine.next());
+                fullStopInfo.append("\nParent Station: " + currentLine.next());
+                
+                String stopInformation = fullStopInfo.toString();
+                put(stop_name, stopInformation);
+                currentLine.close();
+            }
 			input.close();
 		} 
-		catch (FileNotFoundException e) 
+		catch (Exception e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 System.out.println("End of file");
 		}
     }
 
